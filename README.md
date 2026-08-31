@@ -1,5 +1,10 @@
 # RebelUI
 
+## WORK IN PROGRESS!
+
+<img width="1917" height="1084" alt="Screenshot (241)" src="https://github.com/user-attachments/assets/ba77f860-549b-4e5d-aa8e-59f75fcaffed" />
+
+
 **RebelUI** is a lightweight, direct-generation frontend for
 [ComfyUI](https://github.com/Comfy-Org/ComfyUI). It is designed for
 users who want to use their existing ComfyUI installation, models,
