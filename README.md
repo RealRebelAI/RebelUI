@@ -1,5 +1,7 @@
 
-# RebelUI -- WORK IN PROGRESS, UNDER CONSTRUCTION!
+# RebelUI
+
+## WORK IN PROGRESS, UNDER CONSTRUCTION!
 
 <img width="1917" height="1084" alt="Screenshot (241)" src="https://github.com/user-attachments/assets/2df8787c-3644-4239-873d-d4715ecb28d7" />
 
