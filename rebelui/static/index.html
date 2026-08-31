@@ -1,0 +1,1434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RebelUI</title>
+<style>
+:root{
+  --bg:#0b0a0b; --bg2:#121013; --panel:#151316; --panel-2:#1b171c; --panel-3:#232027;
+  --line:#35303a; --line-soft:#26222a; --text:#f4eff3; --text-2:#c8bec7; --text-3:#8f858d;
+  --accent:#f0522b; --accent-2:#ff734f; --accent-3:#7a2818; --ok:#86b899; --warn:#ff9d58; --bad:#ff6552;
+  --shadow:0 16px 40px rgba(0,0,0,.28);
+  --radius:14px; --radius-sm:10px; --pad:16px; --gap:14px;
+  --left-width:340px; --right-width:360px; --log-height:160px;
+  --input-pad-y:10px; --input-pad-x:12px; --input-size:13px; --card-min:130px;
+  --control-shadow:0 4px 0 rgba(0,0,0,.42), 0 10px 24px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.06);
+  --card-shadow:0 10px 28px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.03);
+}
+body[data-theme="slate"]{
+  --bg:#0b1117; --bg2:#111a24; --panel:#121c28; --panel-2:#172334; --panel-3:#1f2e44;
+  --line:#30435d; --line-soft:#213043; --text:#eef5ff; --text-2:#c5d1e0; --text-3:#8ca1ba;
+  --accent:#5d9bff; --accent-2:#85b4ff; --accent-3:#274b84; --ok:#7fc6b7; --warn:#f0b063; --bad:#ff7b82;
+}
+body[data-theme="matrix"]{
+  --bg:#070a08; --bg2:#0c130f; --panel:#101711; --panel-2:#142017; --panel-3:#19281d;
+  --line:#29432d; --line-soft:#1c3020; --text:#eefaf0; --text-2:#cae2ce; --text-3:#7ea387;
+  --accent:#41df62; --accent-2:#71f08d; --accent-3:#1d662b; --ok:#8ce19e; --warn:#a9d46a; --bad:#ff7070;
+}
+body[data-theme="light"]{
+  --bg:#eef1f6; --bg2:#e4e9f0; --panel:#ffffff; --panel-2:#f6f8fb; --panel-3:#edf1f6;
+  --line:#ced6e1; --line-soft:#dde4ec; --text:#101823; --text-2:#314051; --text-3:#67788d;
+  --accent:#ff623c; --accent-2:#ff8669; --accent-3:#bf4828; --ok:#3f8f68; --warn:#b26c22; --bad:#c33e3e;
+  --control-shadow:0 4px 0 rgba(142,154,173,.45), 0 10px 24px rgba(70,83,102,.14), inset 0 1px rgba(255,255,255,.6);
+  --card-shadow:0 12px 30px rgba(70,83,102,.10), inset 0 1px rgba(255,255,255,.8);
+}
+body[data-density="compact"]{
+  --pad:12px; --gap:10px; --input-pad-y:8px; --input-pad-x:10px; --input-size:12px; --radius:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 10%, transparent), transparent 24%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+  color:var(--text-2);
+  font:500 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow:hidden;
+}
+button,input,select,textarea{font:inherit}
+.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-variant-numeric:tabular-nums}
+.hidden{display:none !important}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;border:0!important}
+
+.topbar{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:18px;
+  padding:14px 18px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel) 92%, transparent),color-mix(in srgb, var(--bg) 96%, transparent));
+  box-shadow:0 14px 28px rgba(0,0,0,.14); position:relative; z-index:5;
+}
+.brand{display:flex; align-items:center; gap:0; min-width:240px}
+.brand img{height:64px; width:auto; display:block}
+.brand-copy{display:flex; flex-direction:column; gap:4px}
+.brand-copy strong{color:var(--text); font-size:16px; letter-spacing:.02em}
+.brand-copy span{color:var(--text-3); font-size:12px}
+.toolbar{display:flex; justify-content:center; gap:10px; flex-wrap:wrap}
+.top-actions{display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap}
+.gauge{
+  background:linear-gradient(180deg, color-mix(in srgb, var(--panel-2) 92%, transparent), color-mix(in srgb, var(--panel) 95%, transparent));
+  border:1px solid var(--line); border-radius:12px; padding:10px 12px; min-width:min(480px,45vw);
+  box-shadow:var(--card-shadow);
+}
+.gauge-head{display:flex; justify-content:space-between; gap:8px; margin-bottom:8px}
+.gauge-head b{font-size:11px; color:var(--text); letter-spacing:.11em}
+.gauge-head span{font-size:11px; color:var(--text-3)}
+.bar{position:relative; height:26px; background:color-mix(in srgb, var(--bg) 82%, transparent); border-radius:8px; overflow:hidden; border:1px solid var(--line-soft); box-shadow:inset 0 2px 6px rgba(0,0,0,.35)}
+.seg{position:relative; height:100%; transition:width .25s ease}
+.seg::after{content:attr(data-l); position:absolute; inset:0; display:grid; place-items:center; font:700 9px/1 Consolas,monospace; color:rgba(0,0,0,.88); opacity:0; pointer-events:none}
+.seg:hover::after{opacity:.92}
+.seg.m{background:linear-gradient(180deg,var(--accent-2),var(--accent))}
+.seg.t{background:linear-gradient(180deg,color-mix(in srgb, var(--accent) 70%, var(--panel-3)),var(--accent-3))}
+.seg.v{background:linear-gradient(180deg,color-mix(in srgb, var(--text-3) 85%, white),var(--text-3))}
+.seg.w{background:linear-gradient(180deg,var(--panel-3),var(--line))}
+.ceil{position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--text)}
+.ceil b{position:absolute; left:6px; top:3px; white-space:nowrap; font:700 10px/1 Consolas,monospace; color:var(--text)}
+.gauge-note{margin-top:7px; min-height:1.2em; font-size:11px; color:var(--text-3)}
+.gauge-note.bad{color:var(--bad)}
+
+.btn, .icon-btn, .toggle-btn, .tab-btn, .mini-btn{
+  appearance:none; border:1px solid color-mix(in srgb, var(--line) 90%, transparent);
+  color:var(--text-2);
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel-3) 88%, white 2%),color-mix(in srgb, var(--panel) 96%, black 3%));
+  border-radius:11px; cursor:pointer; box-shadow:var(--control-shadow);
+  transition:filter .12s ease, border-color .12s ease, background .12s ease, box-shadow .12s ease;
+}
+.btn:hover,.icon-btn:hover,.toggle-btn:hover,.tab-btn:hover,.mini-btn:hover{
+  filter:brightness(1.06);
+  border-color:color-mix(in srgb, var(--accent) 55%, var(--line));
+}
+.btn:active,.icon-btn:active,.toggle-btn:active,.tab-btn:active,.mini-btn:active{
+  filter:brightness(.96);
+  transform:none;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.26);
+}
+.btn{padding:10px 14px; font-weight:750; letter-spacing:.02em}
+.btn.accent{color:#1a0e0c; background:linear-gradient(180deg,var(--accent-2),var(--accent)); border-color:color-mix(in srgb,var(--accent) 85%, white); box-shadow:0 4px 0 var(--accent-3),0 10px 24px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.30)}
+.btn.accent:hover{filter:brightness(1.08)}
+.icon-btn{padding:10px 12px; min-width:42px; font-weight:800}
+.toggle-btn,.tab-btn,.mini-btn{padding:8px 10px; font-size:11px; font-weight:800; letter-spacing:.08em}
+.toggle-btn[aria-pressed="true"],.tab-btn[aria-pressed="true"]{
+  color:color-mix(in srgb, var(--bg) 70%, black);
+  background:linear-gradient(180deg,var(--accent-2),var(--accent));
+  border-color:color-mix(in srgb, var(--accent) 85%, white);
+  box-shadow:0 4px 0 var(--accent-3),0 10px 20px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.24)
+}
+.group-toggle{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+.filter-toggle{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.tabset{display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:8px}
+
+.layout{
+  display:grid;
+  grid-template-columns:var(--left-width) 10px minmax(400px,1fr) 10px var(--right-width);
+  height:calc(100vh - 92px);
+  min-height:0;
+}
+.rail{
+  min-width:0;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:var(--pad);
+  display:flex;
+  flex-direction:column;
+  gap:var(--gap);
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel) 93%, transparent),transparent 55%);
+  scrollbar-width:thin;
+  scrollbar-color:color-mix(in srgb, var(--accent) 55%, var(--line)) color-mix(in srgb, var(--bg) 88%, transparent);
+}
+.rail.collapsed{display:none}
+.rail-top{
+  position:sticky; top:0; z-index:3; display:flex; flex-direction:column; gap:10px;
+  background:linear-gradient(180deg,color-mix(in srgb, var(--bg) 90%, transparent),color-mix(in srgb, var(--bg) 72%, transparent));
+  padding-bottom:4px; backdrop-filter:blur(12px);
+}
+.rail-title{display:flex; justify-content:space-between; align-items:center; gap:10px}
+.rail-title strong{color:var(--text); font-size:13px; letter-spacing:.08em}
+.rail-title span{font-size:11px; color:var(--text-3)}
+.splitter{
+  position:relative; background:linear-gradient(180deg,transparent, color-mix(in srgb, var(--line) 80%, transparent), transparent);
+  cursor:col-resize;
+}
+.splitter::before{
+  content:""; position:absolute; inset:0 3px; border-radius:999px; background:color-mix(in srgb, var(--line) 60%, transparent);
+  opacity:.55;
+}
+.splitter:hover::before{background:color-mix(in srgb, var(--accent) 55%, var(--line)); opacity:1}
+.splitter.dragging::before{background:var(--accent); opacity:1}
+
+.panel-card{
+  display:flex; flex-direction:column;
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel-2) 92%, transparent),color-mix(in srgb, var(--panel) 98%, transparent));
+  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--card-shadow); overflow:hidden;
+}
+#leftRail .panel-card{flex:0 0 auto}
+#rightRail .panel-card{flex:0 0 auto}
+#leftRail .panel-card[data-panel-group="setup"]{min-height:150px}
+#leftRail .panel-card[data-panel-group="models"]{min-height:250px}
+#leftRail .panel-card[data-panel-group="encoders"]{min-height:220px}
+#rightRail .panel-card[data-panel-group="sampling"]{min-height:250px}
+#rightRail .panel-card[data-panel-group="output"]{min-height:210px}
+#rightRail .panel-card[data-panel-group="prompt"]{min-height:170px}
+
+.panel-card.collapsed .card-body, .panel-card.collapsed .resize-handle{display:none !important}
+
+label{display:flex; flex-direction:column; gap:6px; font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--text-3)}
+.input, select, input[type=text], input[type=number], textarea{
+  width:100%;
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel-3) 96%, transparent),color-mix(in srgb, var(--panel) 98%, transparent));
+  color:var(--text); border:1px solid var(--line); border-radius:12px; box-shadow:inset 0 1px rgba(255,255,255,.05), 0 2px 6px rgba(0,0,0,.18);
+  padding:var(--input-pad-y) var(--input-pad-x); font-size:var(--input-size); outline:none;
+}
+select{color-scheme:dark}
+body[data-theme="light"] select{color-scheme:light}
+select option, select optgroup{background:var(--panel); color:var(--text)}
+select option:checked{background:var(--accent); color:color-mix(in srgb, var(--bg) 75%, black)}
+input[type=number], select, .mono-input{font-family:Consolas,"Liberation Mono",monospace}
+textarea{resize:vertical; min-height:110px; max-height:320px; line-height:1.5; flex:1}
+.input:focus, select:focus, input[type=text]:focus, input[type=number]:focus, textarea:focus{
+  border-color:color-mix(in srgb, var(--accent) 65%, white); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent), inset 0 1px rgba(255,255,255,.05);
+}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.stack{display:flex; flex-direction:column; gap:12px}
+.hint{font-size:11px; color:var(--text-3); line-height:1.4}
+.meta-line{display:flex; justify-content:space-between; gap:10px; align-items:center; font-size:11px; color:var(--text-3)}
+.badge{
+  display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:800; letter-spacing:.08em;
+  color:var(--text); background:color-mix(in srgb, var(--panel-3) 88%, transparent);
+  border:1px solid var(--line); border-radius:999px; padding:6px 8px;
+}
+
+.stage{min-width:0; min-height:0; display:flex; flex-direction:column; padding:var(--pad); gap:var(--gap)}
+.stage-card{
+  flex:1; min-height:0; display:flex; flex-direction:column;
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel-2) 92%, transparent),color-mix(in srgb, var(--panel) 98%, transparent));
+  border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--card-shadow)
+}
+.stage-head{
+  padding:12px 14px; border-bottom:1px solid var(--line-soft); display:flex; justify-content:space-between; align-items:center; gap:10px;
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel-3) 72%, transparent),color-mix(in srgb, var(--panel-2) 96%, transparent));
+}
+.stage-head strong{color:var(--text); letter-spacing:.08em; font-size:12px}
+.stage-meta{display:flex; gap:8px; flex-wrap:wrap}
+.frame{
+  flex:1; min-height:0; position:relative; display:grid; place-items:center; padding:var(--pad);
+  background:
+    linear-gradient(color-mix(in srgb, var(--line-soft) 55%, transparent) 1px,transparent 1px) 0 0/100% 30px,
+    linear-gradient(90deg,color-mix(in srgb, var(--line-soft) 42%, transparent) 1px,transparent 1px) 0 0/30px 100%,
+    linear-gradient(180deg,color-mix(in srgb, var(--bg) 88%, transparent), color-mix(in srgb, var(--bg2) 96%, transparent));
+}
+.frame::before{
+  content:""; position:absolute; inset:18px; border:1px solid color-mix(in srgb, var(--line-soft) 65%, transparent); border-radius:12px; pointer-events:none;
+}
+.frame img,.frame video{max-width:100%; max-height:100%; border-radius:12px; display:block; box-shadow:0 24px 70px rgba(0,0,0,.42)}
+.empty{text-align:center; user-select:none}
+.empty-mark{font-size:64px; font-weight:900; letter-spacing:-.08em; color:color-mix(in srgb, var(--text-3) 70%, transparent)}
+.empty p{margin:8px 0 0; font-size:12px; color:var(--text-3)}
+.runbar{
+  display:grid; grid-template-columns:auto 1fr auto auto; gap:12px; align-items:center;
+  padding:14px; border-top:1px solid var(--line-soft); background:color-mix(in srgb, var(--panel) 98%, transparent)
+}
+.run{
+  padding:14px 18px; font-weight:900; letter-spacing:.1em; font-size:13px;
+}
+.prog{height:8px; border-radius:999px; background:color-mix(in srgb, var(--bg) 78%, transparent); overflow:hidden; border:1px solid var(--line-soft); box-shadow:inset 0 1px 4px rgba(0,0,0,.35)}
+.prog i{display:block; height:100%; width:100%; transform:translateX(-100%); background:linear-gradient(90deg,var(--accent),var(--accent-2)); transition:transform .2s linear}
+.stat{font-size:11px; color:var(--text-3)}
+.runbar-actions{display:flex; gap:8px}
+.log-wrap{
+  height:var(--log-height);
+  min-height:120px;
+  max-height:55vh;
+  border-top:1px solid var(--line-soft);
+  background:color-mix(in srgb, var(--bg) 92%, transparent);
+  display:flex;
+  flex-direction:column;
+  resize:vertical;
+  overflow:hidden;
+}
+.log-head{padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line-soft)}
+.log-head strong{font-size:12px; color:var(--text)}
+.log{flex:1; overflow:auto; padding:10px 14px; font:500 11px/1.65 Consolas,"Liberation Mono",monospace; color:var(--text-3)}
+.log div{white-space:pre-wrap}
+.log .hi{color:var(--text-2)}
+.log .er{color:var(--bad)}
+.log .go{color:var(--ok)}
+.log .wa{color:var(--warn)}
+
+.drawer-backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.45); opacity:0; pointer-events:none; transition:opacity .18s ease; z-index:20;
+}
+.drawer-backdrop.open{opacity:1; pointer-events:auto}
+.drawer{
+  position:fixed; top:0; right:0; width:min(420px,100vw); height:100vh; transform:translateX(100%);
+  transition:transform .2s ease; z-index:21; padding:18px; overflow:auto;
+  background:linear-gradient(180deg,color-mix(in srgb, var(--panel-2) 98%, transparent),color-mix(in srgb, var(--bg) 99%, transparent));
+  border-left:1px solid var(--line); box-shadow:-20px 0 40px rgba(0,0,0,.35)
+}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
+.drawer-head strong{font-size:16px; color:var(--text)}
+.drawer-grid{display:flex; flex-direction:column; gap:14px}
+.check{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.check input{width:18px; height:18px}
+.settings-row{display:flex; gap:10px; flex-wrap:wrap}
+.inline-actions{display:flex; gap:8px; flex-wrap:wrap}
+.kv{display:grid; grid-template-columns:auto 1fr; gap:6px 12px; font-size:12px}
+.kv b{color:var(--text)}
+.kv span{color:var(--text-3)}
+
+@media (max-width: 1180px){
+  .topbar{grid-template-columns:1fr; align-items:stretch}
+  .gauge{min-width:0}
+  .layout{grid-template-columns:1fr; height:auto; min-height:calc(100vh - 92px)}
+  .splitter{display:none}
+  .rail{display:flex !important}
+  .stage{min-height:52vh}
+}
+</style>
+
+<style id="header-polish-v2">
+/* ── Production header polish ───────────────────────────────────────────── */
+.card-head{
+  min-height:48px;
+  padding:11px 14px;
+  align-items:center;
+  gap:14px;
+}
+
+.card-head > div:first-child{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:nowrap;
+}
+
+.card-head strong{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  color:var(--text);
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.10em;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.card-head small{
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  margin:0;
+  padding-left:10px;
+  border-left:1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  color:var(--text-3);
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.015em;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* Side rail title rows use the same title | description language */
+.rail-title{
+  min-height:30px;
+  align-items:center;
+}
+
+.rail-title > div:first-child{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:nowrap;
+}
+
+.rail-title strong{
+  flex:0 0 auto;
+  color:var(--text);
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.10em;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.rail-title > div:first-child > span{
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  padding-left:10px;
+  border-left:1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  color:var(--text-3);
+  font-size:10.5px;
+  font-weight:600;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* Output viewer header gets the same crisp visual hierarchy */
+.stage-head{
+  min-height:48px;
+  padding:11px 14px;
+}
+
+.stage-head > strong{
+  display:inline-flex;
+  align-items:center;
+  color:var(--text);
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.10em;
+  line-height:1;
+}
+
+/* Stronger card edge separation without making the UI noisy */
+.panel-card{
+  border-color:color-mix(in srgb, var(--line) 88%, transparent);
+}
+
+.card-head{
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--panel-3) 82%, transparent),
+      color-mix(in srgb, var(--panel-2) 96%, transparent)
+    );
+}
+
+.card-head::after{
+  content:"";
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:-1px;
+  height:1px;
+  background:linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 35%, transparent),
+    color-mix(in srgb, var(--line) 72%, transparent) 28%,
+    transparent
+  );
+  pointer-events:none;
+}
+
+.card-head{
+  position:relative;
+}
+
+/* Give the body a little breathing room after the stronger header */
+.card-body{
+  padding-top:13px;
+}
+
+/* Tabs align more cleanly and stop looking vertically cramped */
+.tab-btn{
+  min-height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+
+/* Make badges line up with the header baseline */
+.badge{
+  min-height:26px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Prevent title text from colliding at narrower sidebar widths */
+@media (max-width: 1500px){
+  .card-head small,
+  .rail-title > div:first-child > span{
+    max-width:180px;
+  }
+}
+
+@media (max-width: 1250px){
+  .card-head small,
+  .rail-title > div:first-child > span{
+    max-width:130px;
+  }
+}
+</style>
+
+
+<style id="rail-scrollbars-v1">
+#leftRail::-webkit-scrollbar,
+#rightRail::-webkit-scrollbar{
+  width:10px;
+}
+
+#leftRail::-webkit-scrollbar-track,
+#rightRail::-webkit-scrollbar-track{
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  border-left:1px solid color-mix(in srgb, var(--line-soft) 70%, transparent);
+}
+
+#leftRail::-webkit-scrollbar-thumb,
+#rightRail::-webkit-scrollbar-thumb{
+  background:linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 68%, var(--panel-3)),
+    color-mix(in srgb, var(--accent-3) 78%, var(--panel))
+  );
+  border:2px solid color-mix(in srgb, var(--bg) 88%, transparent);
+  border-radius:999px;
+}
+
+#leftRail::-webkit-scrollbar-thumb:hover,
+#rightRail::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(
+    180deg,
+    var(--accent-2),
+    var(--accent)
+  );
+}
+
+/* Keep sidebar header/tabs visible while the sidebar contents scroll */
+#leftRail .rail-top,
+#rightRail .rail-top{
+  position:sticky;
+  top:0;
+  z-index:6;
+  padding-bottom:8px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg) 98%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 95%, transparent) 82%,
+      transparent 100%
+    );
+  backdrop-filter:blur(12px);
+}
+</style>
+
+
+<style id="log-resize-polish-v1">
+.log-head{
+  position:relative;
+  cursor:ns-resize;
+}
+.log-head::before{
+  content:"";
+  position:absolute;
+  top:4px;
+  left:50%;
+  transform:translateX(-50%);
+  width:54px;
+  height:3px;
+  border-radius:999px;
+  background:color-mix(in srgb, var(--text-3) 55%, transparent);
+}
+.log-head:hover::before{
+  background:color-mix(in srgb, var(--accent) 60%, transparent);
+}
+</style>
+
+
+<style id="output-viewer-fix-v1">
+/* Keep generated media strictly inside the center viewer. */
+.stage-card{
+  min-height:0;
+  overflow:hidden;
+}
+
+.frame{
+  min-height:0;
+  min-width:0;
+  overflow:hidden;
+  position:relative;
+}
+
+.frame img,
+.frame video{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center center;
+  border-radius:12px;
+  box-shadow:0 24px 70px rgba(0,0,0,.42);
+}
+
+/* Prevent the media layer from covering the run bar or log. */
+.runbar,
+.log-wrap{
+  position:relative;
+  z-index:2;
+  flex:0 0 auto;
+}
+
+/* The viewer takes only the remaining space in the stage card. */
+.frame{
+  flex:1 1 auto;
+}
+
+/* Avoid oversized images creating implicit grid tracks. */
+.frame > img,
+.frame > video{
+  min-width:0;
+  min-height:0;
+}
+</style>
+
+</head>
+<body data-theme="ember" data-density="comfortable">
+<header class="topbar">
+  <div class="brand">
+    <img src="/static/rebelui-logo-generated.png" alt="RebelUI logo">
+    
+  </div>
+
+  <div class="gauge" id="gauge">
+    <div class="gauge-head">
+      <b>LIVE GPU MEMORY</b>
+      <span class="mono" id="gtotal">— / — GB</span>
+    </div>
+    <div class="bar">
+      <div class="seg m" id="sm" style="width:0"></div>
+      <div class="seg t hidden" id="st" style="width:0"></div>
+      <div class="seg v hidden" id="sv" style="width:0"></div>
+      <div class="seg w hidden" id="sw" style="width:0"></div>
+      <div class="ceil" id="ceil" style="left:100%"><b id="ceilText">GPU</b></div>
+    </div>
+    <div class="gauge-note mono" id="gnote">Reading live CUDA memory…</div>
+  </div>
+
+  <div class="top-actions">
+    <button class="btn" id="toggleLeftGlobal">Hide Models</button>
+    <button class="btn" id="toggleRightGlobal">Hide Controls</button>
+    <button class="btn" id="settingsBtn">Settings</button>
+  </div>
+</header>
+
+<div class="layout" id="layout">
+  <aside class="rail" id="leftRail">
+    <div class="rail-top">
+      <div class="rail-title">
+        <div>
+          <strong>MODEL LIBRARY</strong>
+          <span>Models, encoders, architectures</span>
+        </div>
+        <span class="badge" id="libraryMeta">0 items</span>
+      </div>
+      <div class="tabset" id="leftTabs">
+        <button class="tab-btn" data-view="all" aria-pressed="true">ALL</button>
+        <button class="tab-btn" data-view="models" aria-pressed="false">MODELS</button>
+        <button class="tab-btn" data-view="encoders" aria-pressed="false">ENCODERS</button>
+        <button class="tab-btn" data-view="setup" aria-pressed="false">SETUP</button>
+      </div>
+    </div>
+
+    <section class="panel-card" data-panel-group="setup" data-size-key="architecture">
+      <div class="card-head">
+        <div><strong>ARCHITECTURE</strong><small>Choose a family preset.</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <label>Family / conditioning preset
+          <select id="arch"></select>
+        </label>
+        <div class="hint">This is a UI preset for matching encoders and defaults. The actual weight architecture is still detected by ComfyUI.</div>
+      </div>
+      
+    </section>
+
+    <section class="panel-card" data-panel-group="models" data-size-key="diffusion">
+      <div class="card-head">
+        <div><strong>DIFFUSION MODEL</strong><small><span id="modelCount">0</span> available</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <label>Format filter</label>
+        <div class="filter-toggle" id="modelFmt">
+          <button class="toggle-btn" data-v="all" aria-pressed="true">ALL</button>
+          <button class="toggle-btn" data-v="full" aria-pressed="false">FULL</button>
+          <button class="toggle-btn" data-v="gguf" aria-pressed="false">GGUF</button>
+        </div>
+        <label>File
+          <select id="model"></select>
+        </label>
+        <div class="meta-line"><span class="hint">FULL includes safetensors, FP8, INT8, and other non-GGUF weights.</span></div>
+        <label>Quick GGUF tier filter</label>
+        <div class="group-toggle" id="ladder"></div>
+      </div>
+      
+    </section>
+
+    <section class="panel-card" data-panel-group="encoders" data-size-key="encoder">
+      <div class="card-head">
+        <div><strong>TEXT ENCODER</strong><small><span id="clipCount">0</span> available</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <label>Format filter</label>
+        <div class="filter-toggle" id="clipFmt">
+          <button class="toggle-btn" data-v="all" aria-pressed="true">ALL</button>
+          <button class="toggle-btn" data-v="full" aria-pressed="false">FULL</button>
+          <button class="toggle-btn" data-v="gguf" aria-pressed="false">GGUF</button>
+        </div>
+        <label>File
+          <select id="clip"></select>
+        </label>
+        <label>Comfy CLIP type
+          <select id="cliptype"></select>
+        </label>
+      </div>
+      
+    </section>
+
+    <section class="panel-card" data-panel-group="setup" data-size-key="vae">
+      <div class="card-head">
+        <div><strong>VAE</strong><small>Managed by ComfyUI on decode.</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <label>File
+          <select id="vae"></select>
+        </label>
+        <div class="hint">Choose the image VAE appropriate for the selected architecture.</div>
+      </div>
+      
+    </section>
+  </aside>
+
+  <div class="splitter" id="splitLeft" title="Drag to resize left sidebar"></div>
+
+  <section class="stage">
+    <div class="stage-card">
+      <div class="stage-head">
+        <strong>OUTPUT VIEWER</strong>
+        <div class="stage-meta">
+          <span class="badge" id="deviceBadge">device: …</span>
+          <span class="badge" id="sessionBadge">idle</span>
+        </div>
+      </div>
+
+      <div class="frame" id="frame">
+        <div class="empty">
+          <div class="empty-mark">R<span style="color:var(--accent)">UI</span></div>
+          <p>No output yet.</p>
+        </div>
+      </div>
+
+      <div class="runbar">
+        <button class="btn accent run" id="run">GENERATE</button>
+        <div class="prog"><i id="pi"></i></div>
+        <div class="stat mono" id="stat">idle</div>
+        <div class="runbar-actions">
+          <button class="btn" id="clearOutput">Clear Output</button>
+          <button class="btn" id="clearLog">Clear Log</button>
+        </div>
+      </div>
+
+      <div class="log-wrap" id="logWrap">
+        <div class="log-head">
+          <strong>RUN LOG</strong>
+          <div class="inline-actions">
+            <button class="mini-btn" id="copySessionBtn">Copy Settings</button>
+          </div>
+        </div>
+        <div class="log" id="log"><div>RebelUI ready.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="splitter" id="splitRight" title="Drag to resize right sidebar"></div>
+
+  <aside class="rail" id="rightRail">
+    <div class="rail-top">
+      <div class="rail-title">
+        <div>
+          <strong>RUN CONTROLS</strong>
+          <span>Prompting, sampling, output</span>
+        </div>
+        <span class="badge">Resizable</span>
+      </div>
+      <div class="tabset" id="rightTabs">
+        <button class="tab-btn" data-view="all" aria-pressed="true">ALL</button>
+        <button class="tab-btn" data-view="prompt" aria-pressed="false">PROMPTS</button>
+        <button class="tab-btn" data-view="sampling" aria-pressed="false">SAMPLING</button>
+        <button class="tab-btn" data-view="output" aria-pressed="false">OUTPUT</button>
+      </div>
+    </div>
+
+    <section class="panel-card" data-panel-group="prompt" data-size-key="prompt">
+      <div class="card-head">
+        <div><strong>PROMPT</strong><small>Main generation description.</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <textarea id="pos" placeholder="Describe what you want to generate."></textarea>
+      </div>
+      
+    </section>
+
+    <section class="panel-card" data-panel-group="prompt" data-size-key="negative">
+      <div class="card-head">
+        <div><strong>NEGATIVE</strong><small>Optional exclusions.</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <textarea id="neg" placeholder="Optional negative prompt. Leave blank if not needed."></textarea>
+      </div>
+      
+    </section>
+
+    <section class="panel-card" data-panel-group="sampling" data-size-key="sampling">
+      <div class="card-head">
+        <div><strong>SAMPLING</strong><small>Sampler, scheduler, steps, CFG, seed.</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <div class="pair">
+          <label>Steps<input type="number" id="steps" value="8" min="1" max="200"></label>
+          <label>CFG<input type="number" id="cfg" value="1.0" step="0.1" min="0" max="30"></label>
+        </div>
+        <div class="pair">
+          <label>Sampler<select id="sampler"></select></label>
+          <label>Scheduler<select id="sched"></select></label>
+        </div>
+        <label>Seed
+          <div class="pair" style="grid-template-columns:1fr auto">
+            <input type="number" id="seed" value="42">
+            <button class="btn" id="dice" type="button">Randomize</button>
+          </div>
+        </label>
+      </div>
+      
+    </section>
+
+    <section class="panel-card" data-panel-group="output" data-size-key="output">
+      <div class="card-head">
+        <div><strong>OUTPUT</strong><small>Canvas and frame settings.</small></div>
+        <div class="card-actions"><button class="mini-btn collapse-btn">–</button></div>
+      </div>
+      <div class="card-body">
+        <div class="pair">
+          <label>Width<input type="number" id="w" value="1024" step="16"></label>
+          <label>Height<input type="number" id="h" value="1024" step="16"></label>
+        </div>
+        <div class="pair">
+          <label>Frames<input type="number" id="frames" value="1" min="1"></label>
+          <label>FPS<input type="number" id="fps" value="16" min="1"></label>
+        </div>
+        <label>Batch<input type="number" id="batch" value="1" min="1" max="8"></label>
+      </div>
+      
+    </section>
+  </aside>
+</div>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="settingsDrawer" aria-hidden="true">
+  <div class="drawer-head">
+    <strong>RebelUI Settings</strong>
+    <button class="icon-btn" id="closeSettings" aria-label="Close settings">✕</button>
+  </div>
+
+  <div class="drawer-grid">
+    <section class="panel-card">
+      <div class="card-head">
+        <div><strong>APPEARANCE</strong><small>Theme, density, workspace polish.</small></div>
+      </div>
+      <div class="card-body">
+        <label>Theme
+          <select id="themeSelect">
+            <option value="ember">Ember Dark</option>
+            <option value="slate">Slate Blue</option>
+            <option value="matrix">Matrix Green</option>
+            <option value="light">Light Studio</option>
+          </select>
+        </label>
+        <label>Density
+          <select id="densitySelect">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel-card">
+      <div class="card-head">
+        <div><strong>PERSISTENCE</strong><small>What RebelUI remembers between sessions.</small></div>
+      </div>
+      <div class="card-body">
+        <label class="check"><span>Remember last run settings</span><input type="checkbox" id="rememberSession" checked></label>
+        <label class="check"><span>Remember sidebar sizes & tab state</span><input type="checkbox" id="rememberLayout" checked></label>
+        <label class="check"><span>Show log panel</span><input type="checkbox" id="showLog" checked></label>
+      </div>
+    </section>
+
+    <section class="panel-card">
+      <div class="card-head">
+        <div><strong>LAYOUT ACTIONS</strong><small>Sidebar, prompt, and session controls.</small></div>
+      </div>
+      <div class="card-body">
+        <div class="inline-actions">
+          <button class="btn" id="resetLayoutBtn">Reset Layout</button>
+          <button class="btn" id="resetSessionBtn">Reset Session Memory</button>
+        </div>
+        <div class="inline-actions">
+          <button class="btn" id="expandAllBtn">Expand All Panels</button>
+          <button class="btn" id="restoreSidebarsBtn">Restore Sidebars</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card">
+      <div class="card-head">
+        <div><strong>ENVIRONMENT</strong><small>Live backend summary.</small></div>
+      </div>
+      <div class="card-body">
+        <div class="kv">
+          <b>Device</b><span id="envDevice">—</span>
+          <b>VRAM</b><span id="envVram">—</span>
+          <b>Torch</b><span id="envTorch">—</span>
+          <b>Dynamic VRAM</b><span id="envDynamic">—</span>
+          <b>Pinned Memory</b><span id="envPinned">—</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<script>
+const $=id=>document.getElementById(id);
+const SESSION_KEY='rebelui:last-session:v3';
+const UI_KEY='rebelui:ui:v3';
+const SESSION_IDS=['arch','model','clip','cliptype','vae','steps','cfg','sampler','sched','seed','w','h','frames','fps','batch','pos','neg'];
+const ARCH_CLIP={krea2:'krea2',flux:'flux',flux2:'flux',qwen_image:'qwen_image',qwen_image_edit:'qwen_image',sd3:'sd3',wan:'wan',ltxv:'ltxv',ltx2:'ltxv'};
+
+let CEIL=8, TIERS=[], EST={model:0,clip:0,vae:0,work:1.1}, DATA={unet:[],clip:[],vae:[],clip_types:[],architectures:[]};
+let modelFormat='all', clipFormat='all';
+let ui = readJSON(UI_KEY,{
+  theme:'ember', density:'comfortable', rememberSession:true, rememberLayout:true, showLog:true,
+  leftWidth:340, rightWidth:360, leftCollapsed:false, rightCollapsed:false,
+  leftTab:'all', rightTab:'all', sectionHeights:{}, collapsedPanels:{}
+});
+let session = readJSON(SESSION_KEY,{modelFormat:'all',clipFormat:'all'});
+
+function readJSON(key, fallback){try{return Object.assign({}, fallback, JSON.parse(localStorage.getItem(key)||'{}'))}catch(e){return structuredClone?structuredClone(fallback):JSON.parse(JSON.stringify(fallback))}}
+function saveJSON(key, obj){try{localStorage.setItem(key, JSON.stringify(obj))}catch(e){}}
+function fmt(g){return Number(g||0).toFixed(2)+' GB'}
+function log(msg, cls){
+  const d=document.createElement('div');
+  if(cls)d.className=cls;
+  d.textContent=msg;
+  $('log').appendChild(d);
+  $('log').scrollTop=1e9;
+}
+function setBadge(id,text){$(id).textContent=text}
+function applyTheme(theme){document.body.dataset.theme=theme||'ember'; $('themeSelect').value=theme||'ember'}
+function applyDensity(density){document.body.dataset.density=density||'comfortable'; $('densitySelect').value=density||'comfortable'}
+function applyLogVisibility(show){$('logWrap').classList.toggle('hidden', !show); $('showLog').checked=!!show}
+function updateLayoutCSS(){
+  const leftW = ui.leftWidth || 340;
+  const rightW = ui.rightWidth || 360;
+  document.documentElement.style.setProperty('--left-width', leftW+'px');
+  document.documentElement.style.setProperty('--right-width', rightW+'px');
+
+  const mobile = window.innerWidth <= 1180;
+  const leftHidden = !!ui.leftCollapsed;
+  const rightHidden = !!ui.rightCollapsed;
+
+  $('leftRail').classList.toggle('collapsed', leftHidden);
+  $('rightRail').classList.toggle('collapsed', rightHidden);
+
+  // On desktop, remove hidden sidebars from the grid entirely instead of
+  // leaving their width reserved. Keep the surviving splitter active.
+  if(!mobile){
+    let cols = [];
+    if(!leftHidden){
+      cols.push(leftW+'px');
+      cols.push('10px');
+    }
+    cols.push('minmax(420px,1fr)');
+    if(!rightHidden){
+      cols.push('10px');
+      cols.push(rightW+'px');
+    }
+    $('layout').style.gridTemplateColumns = cols.join(' ');
+  }else{
+    $('layout').style.gridTemplateColumns = '1fr';
+  }
+
+  $('splitLeft').classList.toggle('hidden', leftHidden || mobile);
+  $('splitRight').classList.toggle('hidden', rightHidden || mobile);
+
+  $('toggleLeftGlobal').textContent = leftHidden ? 'Show Models' : 'Hide Models';
+  $('toggleRightGlobal').textContent = rightHidden ? 'Show Controls' : 'Hide Controls';
+}
+function persistUI(){ if(ui.rememberLayout) saveJSON(UI_KEY, ui); }
+function persistSession(){ if(ui.rememberSession) saveJSON(SESSION_KEY, session); }
+
+function paintLiveVRAM(v){
+  if(!v || !v.total_gib) return;
+  CEIL=v.total_gib;
+  const used=Math.max(0,v.used_gib||0), free=Math.max(0,v.free_gib||0);
+  const pct=Math.min(100, used/CEIL*100);
+  $('sm').style.width=pct+'%';
+  $('sm').dataset.l='used '+fmt(used);
+  $('ceil').style.left='calc(100% - 2px)';
+  $('gtotal').textContent=fmt(used)+' used / '+fmt(CEIL);
+  $('ceilText').textContent=fmt(CEIL);
+  $('gnote').classList.remove('bad');
+  $('gnote').textContent=
+    fmt(free)+' free · torch allocated '+fmt(v.torch_allocated_gib||0)+
+    ' · reserved '+fmt(v.torch_reserved_gib||0);
+}
+async function refreshLiveVRAM(){
+  try{
+    const v=await (await fetch('/api/vram',{cache:'no-store'})).json();
+    paintLiveVRAM(v);
+  }catch(e){}
+}
+function setOptions(id, items, selected){
+  const s=$(id), old=selected!=null ? String(selected) : String(s.value||'');
+  s.innerHTML='';
+  (items||[]).forEach(item=>{
+    const val = typeof item === 'string' ? item : item.name;
+    const o=document.createElement('option');
+    o.value = val; o.textContent = val;
+    s.appendChild(o);
+  });
+  if([...s.options].some(o=>o.value===old)) s.value = old;
+}
+function filterItems(items, fmt){ return fmt==='all' ? items : (items||[]).filter(x=>x.format===fmt); }
+function refreshCounts(ms, cs){
+  $('modelCount').textContent = ms.length;
+  $('clipCount').textContent = cs.length;
+  $('libraryMeta').textContent = ms.length+' models · '+cs.length+' encoders';
+}
+function refreshModels(modelSelected, clipSelected){
+  const ms=filterItems(DATA.unet, modelFormat), cs=filterItems(DATA.clip, clipFormat);
+  setOptions('model', ms, modelSelected || session.model);
+  setOptions('clip', cs, clipSelected || session.clip);
+  refreshCounts(ms, cs);
+  sizeUp();
+}
+function restoreSessionValues(){
+  SESSION_IDS.forEach(id=>{
+    const e=$(id); if(!e) return;
+    const value=session[id];
+    if(value==null) return;
+    if((e.tagName==='SELECT') && ![...e.options].some(o=>o.value===String(value))) return;
+    e.value=String(value);
+  });
+  modelFormat=session.modelFormat||'all';
+  clipFormat=session.clipFormat||'all';
+  syncToggleGroup('modelFmt', modelFormat);
+  syncToggleGroup('clipFmt', clipFormat);
+}
+function writeSessionField(id, value){ session[id]=value; persistSession(); }
+function captureSession(){
+  SESSION_IDS.forEach(id=>{ const e=$(id); if(e) session[id]=e.value; });
+  session.modelFormat=modelFormat; session.clipFormat=clipFormat;
+  persistSession();
+}
+function syncToggleGroup(id, value){
+  [...$(id).children].forEach(btn=>btn.setAttribute('aria-pressed', String(btn.dataset.v===value)));
+}
+function bindToggleGroup(id, callback){
+  [...$(id).children].forEach(btn=>btn.addEventListener('click', ()=>{
+    [...$(id).children].forEach(x=>x.setAttribute('aria-pressed','false'));
+    btn.setAttribute('aria-pressed','true');
+    callback(btn.dataset.v);
+  }));
+}
+function bindTabGroup(id, onChange){
+  const group=$(id);
+  [...group.children].forEach(btn=>btn.addEventListener('click', ()=>{
+    [...group.children].forEach(x=>x.setAttribute('aria-pressed','false'));
+    btn.setAttribute('aria-pressed','true');
+    onChange(btn.dataset.view);
+  }));
+}
+function applyRailView(side, view){
+  const root = side==='left' ? $('leftRail') : $('rightRail');
+  root.querySelectorAll('.panel-card[data-panel-group]').forEach(card=>{
+    const group=card.dataset.panelGroup;
+    card.classList.toggle('hidden', !(view==='all' || group===view || (view==='setup' && group==='setup')));
+  });
+}
+function syncTabState(id, view){
+  [...$(id).children].forEach(btn=>btn.setAttribute('aria-pressed', String(btn.dataset.view===view)));
+}
+function buildLadder(){
+  const L=$('ladder'); L.innerHTML='';
+  (TIERS.length ? TIERS : ['Q2_K','Q3_K_M','Q4_K_S','Q4_K_M','Q5_K_M','Q6_K','Q8_0']).forEach(t=>{
+    const b=document.createElement('button');
+    b.className='toggle-btn';
+    b.textContent=t.replace('_K_M','M').replace('_K_S','S').replace('_K','');
+    b.title=t;
+    b.addEventListener('click', ()=>{
+      const all = DATA.unet.filter(x=>x.format==='gguf' && x.name.toUpperCase().includes(t));
+      modelFormat='gguf'; syncToggleGroup('modelFmt','gguf'); refreshModels();
+      if(all.length){ $('model').value=all[0].name; writeSessionField('model', all[0].name); }
+      writeSessionField('modelFormat', modelFormat);
+      sizeUp();
+    });
+    L.appendChild(b);
+  });
+}
+async function sizeUp(){
+  // Keep the size endpoint available for future model metadata, but the header
+  // gauge now reports actual CUDA memory rather than file-size estimates.
+  try{
+    const q=new URLSearchParams({unet:$('model').value||'', clip:$('clip').value||'', vae:$('vae').value||''});
+    const s=await (await fetch('/api/size?'+q)).json();
+    EST={model:s.unet, clip:s.clip, vae:s.vae, work:s.work};
+  }catch(e){}
+  refreshLiveVRAM();
+}
+function setOutputEmpty(){
+  $('frame').innerHTML = '<div class="empty"><div class="empty-mark">R<span style="color:var(--accent)">UI</span></div><p>No output yet.</p></div>';
+}
+function openSettings(open=true){
+  $('settingsDrawer').classList.toggle('open', open);
+  $('drawerBackdrop').classList.toggle('open', open);
+  $('settingsDrawer').setAttribute('aria-hidden', String(!open));
+}
+function setupDrawer(){
+  $('settingsBtn').onclick=()=>openSettings(true);
+  $('closeSettings').onclick=()=>openSettings(false);
+  $('drawerBackdrop').onclick=()=>openSettings(false);
+}
+function setupSplitters(){
+  const minLeft=260, minRight=300;
+  function startDrag(split, side, evt){
+    if(window.innerWidth<=1180) return;
+    evt.preventDefault(); split.classList.add('dragging');
+    const startX=evt.clientX, startLeft=ui.leftWidth, startRight=ui.rightWidth;
+    const layoutRect=$('layout').getBoundingClientRect();
+    function move(e){
+      if(side==='left'){
+        const reserve = ui.rightCollapsed ? 460 : (ui.rightWidth || 360) + 460;
+        const next=Math.min(
+          Math.max(minLeft, startLeft + (e.clientX-startX)),
+          Math.max(minLeft, layoutRect.width-reserve)
+        );
+        ui.leftWidth=next;
+      }else{
+        const reserve = ui.leftCollapsed ? 460 : (ui.leftWidth || 340) + 460;
+        const next=Math.min(
+          Math.max(minRight, startRight - (e.clientX-startX)),
+          Math.max(minRight, layoutRect.width-reserve)
+        );
+        ui.rightWidth=next;
+      }
+      updateLayoutCSS(); persistUI();
+    }
+    function up(){
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      split.classList.remove('dragging');
+      persistUI();
+    }
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  }
+  $('splitLeft').addEventListener('mousedown', e=>startDrag($('splitLeft'),'left',e));
+  $('splitRight').addEventListener('mousedown', e=>startDrag($('splitRight'),'right',e));
+}
+function setupResizablePanels(){
+  // Fixed card layout by design. Only the left/right sidebars and prompt textareas are user-resizable.
+}
+
+function setupPromptSizeMemory(){
+  let h={};
+  try{h=JSON.parse(localStorage.getItem('rebelui:prompt-heights:v1')||'{}')}catch(e){}
+  if(h.pos) $('pos').style.height=h.pos+'px';
+  if(h.neg) $('neg').style.height=h.neg+'px';
+
+  function save(){
+    const data={
+      pos:Math.round($('pos').getBoundingClientRect().height),
+      neg:Math.round($('neg').getBoundingClientRect().height)
+    };
+    try{localStorage.setItem('rebelui:prompt-heights:v1',JSON.stringify(data))}catch(e){}
+  }
+  const ro=new ResizeObserver(save);
+  ro.observe($('pos')); ro.observe($('neg'));
+}
+
+
+function setupLogSizeMemory(){
+  const KEY='rebelui:log-height:v1';
+  try{
+    const saved=parseInt(localStorage.getItem(KEY)||'',10);
+    if(saved>0){
+      $('logWrap').style.height=saved+'px';
+    }
+  }catch(e){}
+
+  const ro=new ResizeObserver(()=>{
+    try{
+      const h=Math.round($('logWrap').getBoundingClientRect().height);
+      if(h>0)localStorage.setItem(KEY,String(h));
+    }catch(e){}
+  });
+  ro.observe($('logWrap'));
+}
+
+function setupControls(){
+  $('clearLog').onclick=()=>{$('log').innerHTML=''; log('Log cleared.','wa');};
+  $('clearOutput').onclick=()=>{setOutputEmpty(); $('sessionBadge').textContent='cleared';};
+  $('copySessionBtn').onclick=async()=>{
+    captureSession();
+    const payload={
+      architecture:$('arch').value, model:$('model').value, clip:$('clip').value, clip_type:$('cliptype').value, vae:$('vae').value,
+      prompt:$('pos').value, negative:$('neg').value, steps:+$('steps').value, cfg:+$('cfg').value,
+      sampler:$('sampler').value, scheduler:$('sched').value, seed:+$('seed').value,
+      width:+$('w').value, height:+$('h').value, frames:+$('frames').value, fps:+$('fps').value, batch:+$('batch').value
+    };
+    try{ await navigator.clipboard.writeText(JSON.stringify(payload,null,2)); log('Copied current settings to clipboard.','go'); }
+    catch(e){ log('Clipboard copy failed: '+e.message,'er'); }
+  };
+  $('toggleLeftGlobal').onclick=()=>{ui.leftCollapsed=!ui.leftCollapsed; if(ui.leftCollapsed) ui.leftTab='all'; updateLayoutCSS(); persistUI();};
+  $('toggleRightGlobal').onclick=()=>{ui.rightCollapsed=!ui.rightCollapsed; if(ui.rightCollapsed) ui.rightTab='all'; updateLayoutCSS(); persistUI();};
+
+  $('themeSelect').onchange=e=>{ui.theme=e.target.value; applyTheme(ui.theme); persistUI();};
+  $('densitySelect').onchange=e=>{ui.density=e.target.value; applyDensity(ui.density); persistUI();};
+  $('rememberSession').onchange=e=>{ui.rememberSession=e.target.checked; persistUI(); if(!ui.rememberSession) localStorage.removeItem(SESSION_KEY);}
+  $('rememberLayout').onchange=e=>{ui.rememberLayout=e.target.checked; persistUI(); if(!ui.rememberLayout) localStorage.removeItem(UI_KEY);}
+  $('showLog').onchange=e=>{ui.showLog=e.target.checked; applyLogVisibility(ui.showLog); persistUI();};
+
+  $('resetLayoutBtn').onclick=()=>{
+    ui.leftWidth=340; ui.rightWidth=360; ui.leftCollapsed=false; ui.rightCollapsed=false;
+    ui.leftTab='all'; ui.rightTab='all';
+    syncTabState('leftTabs','all'); syncTabState('rightTabs','all');
+    applyRailView('left','all'); applyRailView('right','all'); updateLayoutCSS(); persistUI(); log('Layout reset.','go');
+  };
+  $('resetSessionBtn').onclick=()=>{
+    localStorage.removeItem(SESSION_KEY); session={modelFormat:'all',clipFormat:'all'}; log('Saved session memory cleared.','go');
+  };
+  $('expandAllBtn').textContent='Reset Prompt Sizes';
+  $('expandAllBtn').onclick=()=>{
+    $('pos').style.height='';
+    $('neg').style.height='';
+    localStorage.removeItem('rebelui:prompt-heights:v1');
+    log('Prompt sizes reset.','go');
+  };
+  $('restoreSidebarsBtn').onclick=()=>{
+    ui.leftCollapsed=false; ui.rightCollapsed=false; updateLayoutCSS(); persistUI(); log('Sidebars restored.','go');
+  };
+
+  bindToggleGroup('modelFmt', v=>{ modelFormat=v; refreshModels(); session.modelFormat=v; persistSession(); });
+  bindToggleGroup('clipFmt', v=>{ clipFormat=v; refreshModels(); session.clipFormat=v; persistSession(); });
+  bindTabGroup('leftTabs', view=>{ ui.leftTab=view; applyRailView('left', view); persistUI(); });
+  bindTabGroup('rightTabs', view=>{ ui.rightTab=view; applyRailView('right', view); persistUI(); });
+
+  $('dice').onclick=()=>{ $('seed').value=Math.floor(Math.random()*2**31); writeSessionField('seed', $('seed').value); };
+
+  SESSION_IDS.forEach(id=>{
+    const e=$(id); if(!e) return;
+    const handler=()=>writeSessionField(id, e.value);
+    e.addEventListener('change', handler);
+    if(e.tagName==='TEXTAREA' || e.tagName==='INPUT') e.addEventListener('input', handler);
+  });
+  ['model','clip','vae'].forEach(id=>$(id).onchange=()=>{ writeSessionField(id, $(id).value); sizeUp(); });
+}
+async function boot(){
+  applyTheme(ui.theme); applyDensity(ui.density); applyLogVisibility(ui.showLog);
+  $('rememberSession').checked=!!ui.rememberSession;
+  $('rememberLayout').checked=!!ui.rememberLayout;
+  updateLayoutCSS();
+  setupDrawer(); setupSplitters(); setupResizablePanels(); setupControls(); setupPromptSizeMemory(); setupLogSizeMemory();
+  syncTabState('leftTabs', ui.leftTab || 'all'); syncTabState('rightTabs', ui.rightTab || 'all');
+  applyRailView('left', ui.leftTab || 'all'); applyRailView('right', ui.rightTab || 'all');
+  restoreSessionValues();
+
+  try{
+    const env=await (await fetch('/api/env')).json();
+    if(env.vram_gb) CEIL=env.vram_gb;
+    const deviceText = env.device || 'unknown';
+    const deviceBadge = deviceText + ' · ' + fmt(env.vram_gb || 0);
+    $('deviceBadge').textContent='device: '+deviceBadge;
+    $('envDevice').textContent=deviceText;
+    $('envVram').textContent=fmt(env.vram_gb||0);
+    $('envTorch').textContent=env.torch||'—';
+    $('envDynamic').textContent=env.dynamic_vram||'unknown';
+    $('envPinned').textContent=env.pinned_memory||'unknown';
+    if(env.device_error) log('environment note: '+env.device_error, 'wa');
+    log('device: '+deviceText+' · '+fmt(env.vram_gb||0)+' vram · torch '+(env.torch||'unknown'),'hi');
+    log('memory: dynamic VRAM '+(env.dynamic_vram||'unknown')+' · pinned memory '+(env.pinned_memory||'unknown'),'hi');
+  }catch(e){
+    log('environment check failed: '+e.message,'er');
+  }
+
+  try{
+    DATA = await (await fetch('/api/models')).json();
+    TIERS = DATA.tiers || [];
+    setOptions('vae', DATA.vae||[], session.vae);
+    setOptions('cliptype', DATA.clip_types||[], session.cliptype);
+    setOptions('arch', DATA.architectures||['auto','krea2'], session.arch);
+    if(!$('arch').value && [...$('arch').options].some(o=>o.value==='krea2')) $('arch').value='krea2';
+    if(!$('cliptype').value && [...$('cliptype').options].some(o=>o.value==='krea2')) $('cliptype').value='krea2';
+    refreshModels(session.model, session.clip);
+    buildLadder();
+    $('libraryMeta').textContent=(DATA.unet?.length||0)+' models · '+(DATA.clip?.length||0)+' encoders';
+    log('found '+(DATA.unet?.length||0)+' diffusion · '+(DATA.clip?.length||0)+' encoders · '+(DATA.vae?.length||0)+' vae','hi');
+    if(session.model || session.clip || session.vae) log('restored last RebelUI session','go');
+  }catch(e){ log('model discovery failed: '+e.message,'er'); }
+
+  try{
+    const s=await (await fetch('/api/sampling')).json();
+    setOptions('sampler', s.samplers||[], session.sampler);
+    setOptions('sched', s.schedulers||[], session.sched);
+    if(!$('sampler').value && [...$('sampler').options].some(o=>o.value==='euler')) $('sampler').value='euler';
+    if(!$('sched').value && [...$('sched').options].some(o=>o.value==='simple')) $('sched').value='simple';
+  }catch(e){ log('sampling option fetch failed: '+e.message,'wa'); }
+
+  $('arch').onchange=()=>{
+    const key = $('arch').value.toLowerCase();
+    const wanted = ARCH_CLIP[key];
+    if(wanted && [...$('cliptype').options].some(o=>o.value===wanted)) $('cliptype').value=wanted;
+    if(key==='krea2'){
+      $('steps').value=8; $('cfg').value=1; $('frames').value=1;
+      const m=(DATA.unet||[]).find(x=>/krea2.*turbo.*(int8|fp8)/i.test(x.name)) || (DATA.unet||[]).find(x=>/krea2/i.test(x.name));
+      const c=(DATA.clip||[]).find(x=>/qwen3vl.*4b/i.test(x.name));
+      const v=(DATA.vae||[]).find(x=>/qwen.*image.*vae/i.test(x));
+      if(m){
+        modelFormat=m.format; syncToggleGroup('modelFmt', modelFormat); refreshModels(m.name, $('clip').value); $('model').value=m.name;
+      }
+      if(c){
+        clipFormat='all'; syncToggleGroup('clipFmt', clipFormat); refreshModels($('model').value, c.name); $('clip').value=c.name;
+      }
+      if(v) $('vae').value=v;
+      log('Krea 2 preset applied: krea2 CLIP · 8 steps · CFG 1 · image mode','go');
+      sizeUp();
+    }
+    captureSession();
+  };
+
+  $('run').onclick=async()=>{
+    captureSession();
+    const btn=$('run'); btn.disabled=true; $('stat').textContent='loading'; $('sessionBadge').textContent='running'; $('pi').style.transform='translateX(-100%)';
+    const body={
+      architecture:$('arch').value, unet:$('model').value, clip:$('clip').value, clip_type:$('cliptype').value, vae:$('vae').value,
+      positive:$('pos').value, negative:$('neg').value,
+      steps:+$('steps').value, cfg:+$('cfg').value, sampler:$('sampler').value, scheduler:$('sched').value,
+      seed:+$('seed').value, width:+$('w').value, height:+$('h').value, frames:+$('frames').value, fps:+$('fps').value, batch:+$('batch').value
+    };
+    log('generate · '+body.architecture+' · '+body.steps+' steps · cfg '+body.cfg+' · seed '+body.seed,'hi');
+    try{
+      const r=await fetch('/api/generate',{method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(body)});
+      const rd=r.body.getReader(), dec=new TextDecoder(); let buf='';
+      for(;;){
+        const {value,done}=await rd.read();
+        if(done) break;
+        buf += dec.decode(value,{stream:true});
+        let i;
+        while((i=buf.indexOf('\n'))>=0){
+          const line=buf.slice(0,i); buf=buf.slice(i+1);
+          if(!line.trim()) continue;
+          const ev=JSON.parse(line);
+          if(ev.log) log(ev.log, ev.level);
+          if(ev.step!=null){
+            $('pi').style.transform='translateX(-'+(100-ev.step/ev.total*100)+'%)';
+            $('stat').textContent=ev.step+'/'+ev.total+(ev.its ? ' · '+ev.its.toFixed(2)+' s/it' : '');
+          }
+          if(ev.output){
+            const f=$('frame'); f.innerHTML='';
+            const isVideo=/\.(mp4|webm)$/i.test(ev.output);
+            const el=document.createElement(isVideo?'video':'img');
+            const outputUrl = ev.output + (ev.output.includes('?') ? '&' : '?') + 't=' + Date.now();
+
+            el.onload=()=>{
+              log('displayed '+ev.output,'go');
+              $('sessionBadge').textContent='output ready';
+            };
+            el.onerror=()=>{
+              log('output saved but browser could not display '+ev.output,'er');
+              $('sessionBadge').textContent='display error';
+            };
+
+            el.src=outputUrl;
+            if(isVideo){
+              el.controls=true;
+              el.loop=true;
+              el.autoplay=true;
+              el.muted=false;
+              el.onloadeddata=()=>{
+                log('displayed '+ev.output,'go');
+                $('sessionBadge').textContent='output ready';
+              };
+            }
+            f.appendChild(el);
+            log('saved '+ev.output,'go');
+          }
+        }
+      }
+      if(buf.trim()){
+        try{
+          const ev=JSON.parse(buf.trim());
+          if(ev.log) log(ev.log, ev.level);
+          if(ev.output){
+            const f=$('frame'); f.innerHTML='';
+            const isVideo=/\.(mp4|webm)$/i.test(ev.output);
+            const el=document.createElement(isVideo?'video':'img');
+            const outputUrl=ev.output+(ev.output.includes('?')?'&':'?')+'t='+Date.now();
+            el.src=outputUrl;
+            if(isVideo){el.controls=true;el.loop=true;el.autoplay=true;el.muted=false;}
+            el.onerror=()=>log('output saved but browser could not display '+ev.output,'er');
+            f.appendChild(el);
+            log('saved '+ev.output,'go');
+            $('sessionBadge').textContent='output ready';
+          }
+        }catch(e){}
+      }
+      $('stat').textContent='done';
+      if($('sessionBadge').textContent==='running') $('sessionBadge').textContent='done';
+    }catch(e){
+      log('failed: '+e.message,'er');
+      $('stat').textContent='error';
+      $('sessionBadge').textContent='error';
+    }
+    btn.disabled=false;
+  };
+
+  refreshLiveVRAM();
+  sizeUp();
+  setInterval(refreshLiveVRAM, 1000);
+}
+
+window.addEventListener('resize', ()=>{
+  updateLayoutCSS();
+});
+
+boot();
+</script>
+</body>
+</html>
+
+<style>
+.collapse-btn{display:none !important}
+.panel-card.collapsed .card-body{display:flex !important}
+.panel-card.collapsed .resize-handle{display:none !important}
+</style>
+
+<style>
+#leftRail .panel-card.hidden,
+#rightRail .panel-card.hidden{display:none !important}
+#leftRail,#rightRail{min-height:0}
+#leftRail .rail-top,#rightRail .rail-top{flex:0 0 auto}
+#leftRail .panel-card,#rightRail .panel-card{width:100%}
+#rightRail textarea{min-height:110px}
+@media (min-width:1181px){
+  #leftRail,#rightRail{height:100%}
+}
+</style>
