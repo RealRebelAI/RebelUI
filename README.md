@@ -98,7 +98,7 @@ ComfyUI_windows_portable/
 Open:
 
 ``` text
-ComfyUI_windows_portable\
+ComfyUI_windows_portable
 ```
 
 in File Explorer.
@@ -153,7 +153,7 @@ RebelUI
 and place it directly inside:
 
 ``` text
-ComfyUI_windows_portable\ComfyUI
+ComfyUI_windows_portable
 ```
 
 The final location must be:
@@ -214,8 +214,9 @@ No placeholders are required.
 From the RebelUI folder:
 
 ``` text
-..                         = ComfyUI
-..\..\python_embeded       = ComfyUI_windows_portable\python_embeded
+..                         = ComfyUI_windows_portable
+..\ComfyUI                = ComfyUI_windows_portable\ComfyUI
+..\python_embeded         = ComfyUI_windows_portable\python_embeded
 ```
 
 Therefore the same commands work whether ComfyUI is installed on `C:`,
@@ -230,7 +231,7 @@ If ComfyUI Windows Portable is already installed and working:
 ### Open Command Prompt inside:
 
 ``` text
-ComfyUI_windows_portable\ComfyUI
+ComfyUI_windows_portable
 ```
 
 ### Clone RebelUI:
@@ -278,7 +279,7 @@ start_REBELUI.bat
 inside:
 
 ``` text
-ComfyUI\RebelUI
+ComfyUI_windows_portable\RebelUI
 ```
 
 Paste:
@@ -314,7 +315,7 @@ if not exist "..\ComfyUI\main.py" (
 
 start "" cmd /c "timeout /t 3 /nobreak >nul && start http://127.0.0.1:8199"
 
-"..\python_embeded\python.exe" server.py --comfy ".." --port 8199
+"..\python_embeded\python.exe" server.py --comfy "..\ComfyUI" --port 8199
 
 echo.
 echo RebelUI stopped.
@@ -334,7 +335,7 @@ directory from which Windows launched it.
 If RebelUI was installed with Git, open Command Prompt inside:
 
 ``` text
-ComfyUI\RebelUI
+ComfyUI_windows_portable\RebelUI
 ```
 
 and run:
@@ -647,8 +648,8 @@ Verify the exact layout:
 ``` text
 ComfyUI_windows_portable/
 ├── python_embeded/
-└── ComfyUI/
-    └── RebelUI/
+├── ComfyUI/
+└── RebelUI/
 ```
 
 Then open Command Prompt inside `RebelUI` before running the
