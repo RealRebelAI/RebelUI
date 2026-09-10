@@ -363,6 +363,53 @@ http://127.0.0.1:8199
 ```
 
 ---
+## Optional Windows Launcher
+
+For Windows ComfyUI Portable, place the `RebelUI` folder inside your `ComfyUI_windows_portable` folder:
+
+```text
+ComfyUI_windows_portable/
+├── ComfyUI/
+├── python_embeded/
+└── RebelUI/
+    ├── server.py
+    ├── quantizer.py
+    └── start_REBELUI.bat
+
+---
+@echo off
+title RebelUI
+setlocal
+
+set "REBELUI=%~dp0"
+
+for %%I in ("%REBELUI%..") do set "COMFY_ROOT=%%~fI"
+
+set "PYTHON=%COMFY_ROOT%\python_embeded\python.exe"
+set "COMFY=%COMFY_ROOT%\ComfyUI"
+
+if not exist "%PYTHON%" (
+    echo ERROR: ComfyUI embedded Python was not found.
+    pause
+    exit /b 1
+)
+
+if not exist "%COMFY%\main.py" (
+    echo ERROR: ComfyUI was not found.
+    pause
+    exit /b 1
+)
+
+cd /d "%REBELUI%"
+
+start "" cmd /c "timeout /t 3 /nobreak >nul && start http://127.0.0.1:8199"
+
+"%PYTHON%" "%REBELUI%server.py" --comfy "%COMFY%" --port 8199
+
+pause
+
+---
+
 
 Change the three paths to match your installation.
 
@@ -376,6 +423,7 @@ Basic launch:
 
 ```text
 python server.py --comfy <ComfyUI directory>
+
 ```
 
 Useful options include:
