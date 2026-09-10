@@ -1,0 +1,4 @@
+aiohttp
+Pillow
+huggingface_hub
+gguf
