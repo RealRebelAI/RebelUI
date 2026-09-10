@@ -364,27 +364,6 @@ http://127.0.0.1:8199
 
 ---
 
-## Optional Windows Launcher
-
-You can create `start_REBELUI.bat`:
-
-```bat
-@echo off
-title RebelUI
-
-set "PYTHON=D:\AI_Tools\ComfyUI_windows_portable\python_embeded\python.exe"
-set "REBELUI=C:\path\to\RebelUI"
-set "COMFY=D:\AI_Tools\ComfyUI_windows_portable\ComfyUI"
-
-cd /d "%REBELUI%"
-
-start "" cmd /c "timeout /t 3 /nobreak >nul && start http://127.0.0.1:8199"
-
-"%PYTHON%" "%REBELUI%\server.py" --comfy "%COMFY%" --port 8199
-
-pause
-```
-
 Change the three paths to match your installation.
 
 You can create a normal Windows shortcut to this BAT file for one-click startup.
