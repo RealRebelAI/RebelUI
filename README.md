@@ -126,15 +126,15 @@ Your installation will now look like:
 ``` text
 ComfyUI_windows_portable/
 ├── python_embeded/
-└── ComfyUI/
-    ├── main.py
-    ├── models/
-    └── RebelUI/
-        ├── server.py
-        ├── quantizer.py
-        ├── requirements.txt
-        ├── static/
-        └── tools/
+├── ComfyUI/
+│   ├── main.py
+│   └── models/
+└── RebelUI/
+    ├── server.py
+    ├── quantizer.py
+    ├── requirements.txt
+    ├── static/
+    └── tools/
 ```
 
 This location is intentional. It allows RebelUI to use universal
@@ -159,7 +159,7 @@ ComfyUI_windows_portable\ComfyUI
 The final location must be:
 
 ``` text
-ComfyUI_windows_portable\ComfyUI\RebelUI
+ComfyUI_windows_portable\RebelUI
 ```
 
 ------------------------------------------------------------------------
@@ -174,7 +174,7 @@ address bar, type `cmd`, and press Enter.
 Then run:
 
 ``` bat
-..\..\python_embeded\python.exe -m pip install -r requirements.txt
+..\python_embeded\python.exe -m pip install -r requirements.txt
 ```
 
 The repository's `requirements.txt` should contain the additional
@@ -197,10 +197,10 @@ CUDA/PyTorch configuration already working with ComfyUI.
 
 # Start RebelUI
 
-From Command Prompt **inside `ComfyUI\RebelUI`**, run:
+From Command Prompt **inside the `RebelUI` folder**, run:
 
 ``` bat
-..\..\python_embeded\python.exe server.py --comfy ..
+..\python_embeded\python.exe server.py --comfy ..\ComfyUI
 ```
 
 Then open:
@@ -248,13 +248,13 @@ cd RebelUI
 ### Install dependencies:
 
 ``` bat
-..\..\python_embeded\python.exe -m pip install -r requirements.txt
+..\python_embeded\python.exe -m pip install -r requirements.txt
 ```
 
 ### Start RebelUI:
 
 ``` bat
-..\..\python_embeded\python.exe server.py --comfy ..
+..\python_embeded\python.exe server.py --comfy ..\ComfyUI
 ```
 
 ### Open:
@@ -290,23 +290,23 @@ setlocal
 
 cd /d "%~dp0"
 
-if not exist "..\..\python_embeded\python.exe" (
+if not exist "..\python_embeded\python.exe" (
     echo.
     echo ERROR: ComfyUI embedded Python was not found.
     echo.
     echo RebelUI should be installed here:
-    echo   ComfyUI_windows_portable\ComfyUI\RebelUI
+    echo   ComfyUI_windows_portable\RebelUI
     echo.
     pause
     exit /b 1
 )
 
-if not exist "..\main.py" (
+if not exist "..\ComfyUI\main.py" (
     echo.
-    echo ERROR: ComfyUI was not found one directory above RebelUI.
+    echo ERROR: ComfyUI was not found beside RebelUI.
     echo.
     echo Expected:
-    echo   ComfyUI_windows_portable\ComfyUI\RebelUI
+    echo   ComfyUI_windows_portable\RebelUI
     echo.
     pause
     exit /b 1
@@ -314,7 +314,7 @@ if not exist "..\main.py" (
 
 start "" cmd /c "timeout /t 3 /nobreak >nul && start http://127.0.0.1:8199"
 
-"..\..\python_embeded\python.exe" server.py --comfy ".." --port 8199
+"..\python_embeded\python.exe" server.py --comfy ".." --port 8199
 
 echo.
 echo RebelUI stopped.
@@ -346,7 +346,7 @@ git pull
 If `requirements.txt` changed in an update, run:
 
 ``` bat
-..\..\python_embeded\python.exe -m pip install -r requirements.txt
+..\python_embeded\python.exe -m pip install -r requirements.txt
 ```
 
 Then restart RebelUI.
@@ -635,7 +635,7 @@ That can use your system Python instead of ComfyUI's environment.
 From inside `ComfyUI\RebelUI`, use:
 
 ``` bat
-..\..\python_embeded\python.exe server.py --comfy ..
+..\python_embeded\python.exe server.py --comfy ..\ComfyUI
 ```
 
 ------------------------------------------------------------------------
@@ -661,7 +661,7 @@ launch/dependency commands.
 From inside `ComfyUI\RebelUI`, run:
 
 ``` bat
-..\..\python_embeded\python.exe -m pip install -r requirements.txt
+..\python_embeded\python.exe -m pip install -r requirements.txt
 ```
 
 Then restart RebelUI.
@@ -723,24 +723,24 @@ After installation:
 ``` text
 ComfyUI_windows_portable/
 ├── python_embeded/
-└── ComfyUI/
-    ├── main.py
-    ├── models/
-    └── RebelUI/
-        ├── server.py
-        ├── quantizer.py
-        ├── requirements.txt
-        ├── README.md
-        ├── AUTO_QUANTIZER.md
-        ├── static/
-        └── tools/
-            ├── w4a8_convert.py
-            ├── st_to_gguf.py
-            ├── gguf_swap_hiprec.py
-            ├── gguf_set_config.py
-            ├── gguf_fix_shapes.py
-            └── llama/
-                └── llama-quantize.exe
+├── ComfyUI/
+│   ├── main.py
+│   └── models/
+└── RebelUI/
+    ├── server.py
+    ├── quantizer.py
+    ├── requirements.txt
+    ├── README.md
+    ├── AUTO_QUANTIZER.md
+    ├── static/
+    └── tools/
+        ├── w4a8_convert.py
+        ├── st_to_gguf.py
+        ├── gguf_swap_hiprec.py
+        ├── gguf_set_config.py
+        ├── gguf_fix_shapes.py
+        └── llama/
+            └── llama-quantize.exe
 ```
 
 ------------------------------------------------------------------------
