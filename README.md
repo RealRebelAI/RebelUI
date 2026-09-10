@@ -375,8 +375,10 @@ ComfyUI_windows_portable/
     ├── server.py
     ├── quantizer.py
     └── start_REBELUI.bat
+```
 
 ---
+```
 @echo off
 title RebelUI
 setlocal
@@ -407,7 +409,7 @@ start "" cmd /c "timeout /t 3 /nobreak >nul && start http://127.0.0.1:8199"
 "%PYTHON%" "%REBELUI%server.py" --comfy "%COMFY%" --port 8199
 
 pause
-
+```
 ---
 
 
