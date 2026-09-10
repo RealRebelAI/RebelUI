@@ -350,10 +350,12 @@ Example for ComfyUI portable:
 
 ### 4. Start RebelUI
 
+OPEN A COMMAND PROMPT INSIDE THE REBELUI FOLDER
+
 Example:
 
 ```bat
-"..\python_embeded\python.exe" "server.py" --comfy "..\ComfyUI"
+python server.py
 ```
 
 Then open:
