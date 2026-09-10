@@ -1,0 +1,20 @@
+<svg width="760" height="180" viewBox="0 0 760 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FF6A3D"/>
+    <stop offset=".55" stop-color="#F0522B"/>
+    <stop offset="1" stop-color="#9D2F1A"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-30%" width="140%" height="180%">
+    <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000" flood-opacity=".6"/>
+  </filter>
+</defs>
+<g filter="url(#shadow)">
+  <path d="M28 35H143L165 57V123L143 145H28L50 123V57L28 35Z" fill="#161214" stroke="#3B3238" stroke-width="4"/>
+  <path d="M56 58H124C136 58 143 64 143 76C143 87 137 93 128 96C140 98 147 106 147 118V122H121V116C121 110 117 107 109 107H84V122H56V58ZM84 80V91H113C118 91 121 89 121 85.5C121 82 118 80 113 80H84Z" fill="url(#g)"/>
+  <path d="M160 56L181 35V145L160 124V56Z" fill="#F0522B" opacity=".9"/>
+</g>
+<text x="207" y="119" fill="#F4EEF2" font-size="90" font-weight="800" font-family="Arial, Helvetica, sans-serif" letter-spacing="-4">REBEL</text>
+<text x="520" y="119" fill="url(#g)" font-size="90" font-weight="800" font-family="Arial, Helvetica, sans-serif" letter-spacing="-4">UI</text>
+<text x="211" y="148" fill="#7E737B" font-size="15" font-weight="700" font-family="Arial, Helvetica, sans-serif" letter-spacing="5">DIRECT COMFY RUNTIME</text>
+</svg>
