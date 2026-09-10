@@ -98,7 +98,7 @@ ComfyUI_windows_portable/
 Open:
 
 ``` text
-ComfyUI_windows_portable\ComfyUI
+ComfyUI_windows_portable\
 ```
 
 in File Explorer.
