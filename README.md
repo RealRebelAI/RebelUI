@@ -316,7 +316,7 @@ RebelUI recipes can keep those paths at higher precision while quantizing the la
 For ComfyUI portable on Windows, dependencies can be installed into the embedded Python environment if they are not already available:
 
 ```bat
-D:\path\to\ComfyUI_windows_portable\python_embeded\python.exe -m pip install aiohttp pillow
+D:\path\to\ComfyUI_windows_portable\python_embeded\python.exe -m pip install aiohttp pillow huggingface_hub
 ```
 
 Use the Python environment belonging to the ComfyUI installation RebelUI will run against.
