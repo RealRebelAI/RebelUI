@@ -625,7 +625,7 @@ The required conversion scripts and `llama-quantize.exe` must be present.
 Start RebelUI on another port:
 
 ```bat
-python server.py --comfy C:\path\to\ComfyUI --port 8200
+"..\python_embeded\python.exe" "server.py" --comfy "..\ComfyUI"
 ```
 
 Then open:
