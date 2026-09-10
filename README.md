@@ -377,7 +377,11 @@ ComfyUI_windows_portable/
     └── start_REBELUI.bat
 ```
 
+
+
 ---
+## Create start_REBELUI.bat inside the RebelUI folder:
+
 ```
 @echo off
 title RebelUI
