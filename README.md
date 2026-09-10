@@ -353,7 +353,7 @@ D:\AI_Tools\ComfyUI_windows_portable\python_embeded\python.exe -m pip install ai
 Example:
 
 ```bat
-D:\AI_Tools\ComfyUI_windows_portable\python_embeded\python.exe C:\path\to\RebelUI\server.py --comfy D:\AI_Tools\ComfyUI_windows_portable\ComfyUI
+"..\python_embeded\python.exe" "server.py" --comfy "..\ComfyUI"
 ```
 
 Then open:
