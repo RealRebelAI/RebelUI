@@ -1,5 +1,8 @@
 # RebelUI
 
+<img width="1376" height="768" alt="1789061332675" src="https://github.com/user-attachments/assets/6d712d7b-30a5-4b20-838b-cea5001d1202" />
+
+
 A direct-to-library runner for ComfyUI's core.
 
 RebelUI skips the graph engine and calls ComfyUI's model loading,
