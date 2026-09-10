@@ -345,7 +345,7 @@ Update ComfyUI when using newly released architectures that require newer loader
 Example for ComfyUI portable:
 
 ```bat
-D:\AI_Tools\ComfyUI_windows_portable\python_embeded\python.exe -m pip install aiohttp pillow
+D:\AI_Tools\ComfyUI_windows_portable\python_embeded\python.exe -m pip install aiohttp pillow huggingface_hub gguf
 ```
 
 ### 4. Start RebelUI
